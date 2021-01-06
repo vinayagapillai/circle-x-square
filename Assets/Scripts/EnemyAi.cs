@@ -10,6 +10,7 @@ public class EnemyAi : MonoBehaviour
     public float physicalDistance = 5;
     public float airDistance = 8;
     public float getAwayDiatance = 3;
+    public float health = 100;
 
     bool jumped = false;
 
@@ -18,15 +19,21 @@ public class EnemyAi : MonoBehaviour
 
     private void Update()
     {
-        if(Vector2.Distance(transform.position, target.position) >= physicalDistance && 
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+
+        if (gameObject.GetComponent<Rigidbody2D>().velocity.y < 0)
+        {
+            gameObject.GetComponent<Rigidbody2D>().velocity += Vector2.up * Physics2D.gravity.y * (3 - 1) * Time.deltaTime;
+        }
+
+        if (Vector2.Distance(transform.position, target.position) >= physicalDistance && 
             Vector2.Distance(transform.position, target.position) >= airDistance)
         {
             transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
             StartCoroutine(JumpOnce());
-            if (gameObject.GetComponent<Rigidbody2D>().velocity.y < 0)
-            {
-                gameObject.GetComponent<Rigidbody2D>().velocity += Vector2.up * Physics2D.gravity.y * (3 - 1) * Time.deltaTime;
-            }
         }
         else if (Vector2.Distance(transform.position, target.position) >= physicalDistance)
         {
@@ -61,15 +68,28 @@ public class EnemyAi : MonoBehaviour
 
     public void CheckRayCast()
     {
-        RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, (Vector2)target.position, 50f, ~layer_mask);
+        var dir = target.position - transform.position;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 50f, ~layer_mask);
 
-        Debug.DrawRay(transform.position, target.position, Color.green);
-        //Debug.Log(target.position);
+        Debug.DrawRay(transform.position, dir, Color.green);
 
-        if (hit)
+        if (hit.collider.tag == "Player")
         {
-            Debug.Log(hit.collider.name);
+            EnemyBullet.playerVisible = true;
+        }
+        else
+        {
+            EnemyBullet.playerVisible = false;
+        }
+    }
 
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Bullet")
+        {
+            health -= 10;
+            Destroy(collision.gameObject);
         }
     }
 }

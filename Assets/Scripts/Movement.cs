@@ -8,6 +8,7 @@ public class Movement : MonoBehaviour
     #region Fields
     public float jumpSpeed = 5;
     public float speed = 10;
+    public float health = 100;
 
     Rigidbody2D rb;
     #endregion
@@ -20,8 +21,23 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+
         Move();
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Bullet")
+        {
+            health -= 10;
+            Destroy(collision.gameObject);
+        }
+    }
+
     #endregion
 
     #region private methods

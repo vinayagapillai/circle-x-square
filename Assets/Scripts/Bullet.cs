@@ -12,6 +12,7 @@ public class Bullet : MonoBehaviour
     //private Rigidbody2D bullet;
     private Vector3 shootDirection;
     private bool inCooldown = false;
+    private GameObject bullet;
 
 
     #endregion
@@ -47,7 +48,7 @@ public class Bullet : MonoBehaviour
         direction.Normalize();
 
         // Creates the bullet locally
-        GameObject bullet = (GameObject)Instantiate(
+        bullet = (GameObject)Instantiate(
                                 bulletGameobject,
                                 transform.position + (Vector3)(direction * 0.5f),
                                 Quaternion.identity);
