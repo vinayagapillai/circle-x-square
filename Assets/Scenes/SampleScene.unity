@@ -1070,7 +1070,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpSpeed: 15
   speed: 10
-  health: 1000
+  health: 10
 --- !u!114 &856192178
 MonoBehaviour:
   m_ObjectHideFlags: 0
